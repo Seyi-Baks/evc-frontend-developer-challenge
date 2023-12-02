@@ -1,13 +1,15 @@
 import { Routes, Route } from 'react-router-dom';
-import LoginPage from './views/Login';
+import SigninPage from './views/Signin';
 import Dashboard from './views/Dashboard';
 import { AuthContextProvider } from './context/AuthContext';
 import Protected from './components/Protected';
+import Navbar from './components/NavBar';
 
 const App = () => {
   return (
     <div>
       <AuthContextProvider>
+      <Navbar />
         <Routes>
           <Route
             path='/'
@@ -17,7 +19,7 @@ const App = () => {
               </Protected>
             }
           />
-          <Route path='/signin' element={<LoginPage />} />
+          <Route path='/signin' element={<SigninPage />} />
         </Routes>
       </AuthContextProvider>
     </div>

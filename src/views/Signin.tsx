@@ -1,9 +1,13 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect } from 'react';
 import Input from '../components/Input';
 import Navbar from '../components/NavBar';
 import { UserAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
-const LoginPage = () => {
-    const { googleSignIn } = UserAuth();
+const SigninPage = () => {
+    const { googleSignIn, user } = UserAuth();
+    const navigate = useNavigate();
 
     const handleGoogleSignIn = async () => {
         try {
@@ -13,9 +17,15 @@ const LoginPage = () => {
         }
     }
 
+
+    useEffect(() => {
+        if (user != null) {
+            navigate('/');
+        }
+    }, [user]);
+
     return (
         <>
-            <Navbar />
             <section className="flex justify-center">
                 <div className="md:w-[30%]">
                     <div className={'md:p-10 p-4 mx-auto mt-20'}>
@@ -53,6 +63,6 @@ const LoginPage = () => {
     )
 }
 
-export default LoginPage;
+export default SigninPage;
 
 
