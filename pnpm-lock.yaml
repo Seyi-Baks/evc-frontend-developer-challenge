@@ -26,6 +26,12 @@ dependencies:
   '@types/react-dom':
     specifier: ^18.2.17
     version: 18.2.17
+  autoprefixer:
+    specifier: ^10.4.16
+    version: 10.4.16(postcss@8.4.32)
+  postcss:
+    specifier: ^8.4.32
+    version: 8.4.32
   react:
     specifier: ^18.2.0
     version: 18.2.0
@@ -35,6 +41,9 @@ dependencies:
   react-scripts:
     specifier: 5.0.1
     version: 5.0.1(@babel/plugin-syntax-flow@7.23.3)(@babel/plugin-transform-react-jsx@7.23.4)(eslint@8.55.0)(react@18.2.0)(typescript@4.9.5)
+  tailwindcss:
+    specifier: ^3.3.5
+    version: 3.3.5
   typescript:
     specifier: ^4.9.5
     version: 4.9.5

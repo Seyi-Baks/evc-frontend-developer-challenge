@@ -8,7 +8,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <>
-      <h1>EVC FRONTEND DEVELOPER CHALLENGE</h1>
+      <h1 className='text-4xl font-bold text-blue-600'>EVC FRONTEND DEVELOPER CHALLENGE</h1>
     </>
   </React.StrictMode>
 );
