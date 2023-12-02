@@ -1,6 +1,7 @@
 import { GoogleAuthProvider, User, onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
 import { ReactNode, createContext, useContext, useEffect, useState } from "react";
 import { auth } from '../config/firebase'
+import Loading from "../components/Loading";
 
 interface AuthContextType {
     googleSignIn: () => Promise<void>;
@@ -16,6 +17,7 @@ interface AuthContextProviderProps {
 
 export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
 
     const googleSignIn = async () => {
         const provider = new GoogleAuthProvider();
@@ -33,13 +35,18 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({ childr
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
-            console.log('User ', user)
+            setLoading(false);
         })
 
         return () => {
             unsubscribe();
         }
-    }, [user])
+    }, [user]);
+
+    if (loading) {
+        return <Loading />
+    }
+
 
 
     return (

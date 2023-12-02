@@ -9,7 +9,7 @@ const App = () => {
   return (
     <div>
       <AuthContextProvider>
-      <Navbar />
+        <Navbar />
         <Routes>
           <Route
             path='/'
