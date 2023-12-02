@@ -21,7 +21,6 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({ childr
         const provider = new GoogleAuthProvider();
         try {
             await signInWithPopup(auth, provider);
-            //    signInWithRedirect(auth, provider)
         } catch (error) {
             console.error(error);
         }
@@ -40,7 +39,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({ childr
         return () => {
             unsubscribe();
         }
-    }, [])
+    }, [user])
 
 
     return (
