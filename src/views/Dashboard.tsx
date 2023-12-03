@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react"
 import Loading from "../components/Loading";
-import { getCarbonIntensityData, getUserCarbonIntensityData } from "../api";
-import { FormikHelpers } from 'formik';
-import { CarbonIntensityData } from "../types/carbonIntensityTypes";
-import { UserAuth } from "../context/AuthContext";
 import { extractTimeFromISOString, getGreetingBasedOnTime } from "../utils/date";
 import CarbonIntensityCard from "../components/CarbonIntensityCard";
 import { ErrorMessage } from 'formik';
@@ -11,6 +7,11 @@ import Input from "../components/Input";
 import * as yup from 'yup';
 import Form from "../components/Form";
 import LeafIcon from "../assets/icons/svg/LeafIcon";
+import { useSelector, useDispatch } from 'react-redux';
+import { AppDispatch, RootState } from "../redux/store";
+import { fetchCarbonIntensityData } from "../features/national-carbon-intensity/carbon-intensityThunks";
+import { selectFirstModerateIntensitySlot } from "../features/user-carbon-intensity/user-carbon-intensitySlice";
+import { fetchUserCarbonIntensityData } from "../features/user-carbon-intensity/user-carbon-intensityThunks";
 
 interface FormValues {
   postcode: string;
@@ -18,42 +19,27 @@ interface FormValues {
 }
 
 const Dashboard = () => {
-  const { user } = UserAuth();
-  const [loading, setLoading] = useState(true);
-  const [intensityData, setIntensityData] = useState<CarbonIntensityData | null>(null);
-  const [userCarbonIntensityData, setUserCarbonIntensityData] = useState<CarbonIntensityData | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>();
+  const user = useSelector((state: RootState) => state.user.user);
+  const dispatch: AppDispatch = useDispatch();
+  const carbonIntensityData = useSelector((state: RootState) => state.carbonIntensity);
+  const userCarbonIntensityData = useSelector((state: RootState) => selectFirstModerateIntensitySlot(state, selectedDate!));
+  const isCarbonIntensityDataLoading = useSelector((state: RootState) => state.carbonIntensity.isLoading);
+  const isUserCarbonIntensityDataLoading = useSelector((state: RootState) => state.userCarbonIntensity.isLoading);
 
   useEffect(() => {
-    const fetchCarbonIntensityData = async () => {
-      const response = await getCarbonIntensityData();
-      setIntensityData(response.data[0] as CarbonIntensityData);
-      setLoading(false);
-    }
+    dispatch(fetchCarbonIntensityData());
+  }, [dispatch]);
 
-    fetchCarbonIntensityData();
-  }, [])
-
-  if (loading) {
+  if (isCarbonIntensityDataLoading) {
     return <Loading />;
   }
 
-  const findFirstModerateTimeSlot = (data: CarbonIntensityData[]): CarbonIntensityData | null => {
-    return data.find(slot => slot.intensity.index === 'moderate') || null;
+
+  const onSubmit = async (values: FormValues) => {
+    setSelectedDate(new Date(values.date))
+    dispatch(fetchUserCarbonIntensityData({ date: values.date, postCode: values.postcode }));
   };
-
-  const onSubmit = async (values: FormValues, { setSubmitting }: FormikHelpers<FormValues>) => {
-    setUserCarbonIntensityData(null);
-    try {
-      const response = await getUserCarbonIntensityData(values.date, values.postcode);
-      const firstModerateSlot = findFirstModerateTimeSlot(response.data.data);
-      setUserCarbonIntensityData(firstModerateSlot);
-    } catch (error) {
-      console.log(error)
-    } finally {
-      setSubmitting(false)
-    }
-
-  }
 
   const validationSchema = yup.object({
     postcode: yup
@@ -77,15 +63,15 @@ const Dashboard = () => {
     <div className="flex flex-col mx-24 mt-12">
       <div className="flex justify-between items-start">
         <h1 className="text-3xl font-bold">{getGreetingBasedOnTime()}, {user?.displayName}!</h1>
-        {intensityData && (
+        {carbonIntensityData.nationalData && (
           <div className="ml-auto">
-            <CarbonIntensityCard intensityData={intensityData} />
+            <CarbonIntensityCard intensityData={carbonIntensityData.nationalData?.data[0]} />
           </div>
         )}
 
       </div>
       <Form<FormValues> initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-        {({ isSubmitting }) => (
+        {() => (
           <>
             <div className="flex flex-col md:flex-row items-center space-x-4 mt-9">
               <div className="flex-grow relative">
@@ -100,7 +86,7 @@ const Dashboard = () => {
                 <button
                   type="submit"
                   className="bg-green-500 text-white rounded-md py-2 px-4 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  disabled={isSubmitting}
+                  disabled={isUserCarbonIntensityDataLoading}
                 >
                   Submit
                 </button>
@@ -109,7 +95,7 @@ const Dashboard = () => {
             <div>
               {userCarbonIntensityData && (
                 <>
-                <p className="font-semibold">Next best available slot: </p>
+                  <p className="font-semibold">Next best available slot: </p>
                   <div className="mx-auto bg-white rounded-2xl shadow-md p-4 flex flex-col items-center">
                     <div className="flex items-center mb-1">
                       <LeafIcon />
@@ -131,7 +117,7 @@ const Dashboard = () => {
                 </>
               )}
             </div>
-            {isSubmitting && <div> <Loading message="Fetching Data.." className="h-auto" /></div>}
+            {isUserCarbonIntensityDataLoading && <div> <Loading message="Fetching Data.." className="h-auto" /></div>}
           </>
         )}
       </Form>
