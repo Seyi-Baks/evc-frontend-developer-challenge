@@ -1,13 +1,14 @@
 import React, { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
-import { UserAuth } from '../context/AuthContext';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store'; // Update this path as needed
 
 interface ProtectedProps {
   children: ReactNode;
 }
 
 const Protected: React.FC<ProtectedProps> = ({ children }) => {
-  const { user } = UserAuth();
+  const user = useSelector((state: RootState) => state.user.user);
 
   if (!user) {
     return <Navigate to="/signin" replace />;

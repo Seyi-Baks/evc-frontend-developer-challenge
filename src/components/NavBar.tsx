@@ -1,12 +1,15 @@
 import Logo from "../assets/images/evc-logo.png";
-import { UserAuth } from '../context/AuthContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from "../redux/store";
+import { logOut } from "../features/auth/authThunks";
 
 const Navbar = () => {
-    const { user, logOut } = UserAuth();
+    const dispatch: AppDispatch = useDispatch();
+    const user = useSelector((state: RootState) => state.user.user);
 
     const handleSignOut = async () => {
       try {
-        await logOut()
+        dispatch(logOut());
       } catch (error) {
         console.log(error)
       }
