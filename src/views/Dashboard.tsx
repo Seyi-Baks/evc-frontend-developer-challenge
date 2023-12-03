@@ -4,13 +4,13 @@ import { getCarbonIntensityData, getUserCarbonIntensityData } from "../api";
 import { FormikHelpers } from 'formik';
 import { CarbonIntensityData } from "../types/carbonIntensityTypes";
 import { UserAuth } from "../context/AuthContext";
-import { getGreetingBasedOnTime } from "../utils/date";
+import { extractTimeFromISOString, getGreetingBasedOnTime } from "../utils/date";
 import CarbonIntensityCard from "../components/CarbonIntensityCard";
 import { ErrorMessage } from 'formik';
 import Input from "../components/Input";
 import * as yup from 'yup';
 import Form from "../components/Form";
-import { capitalizeFirstLetter } from "../utils/util";
+import LeafIcon from "../assets/icons/svg/LeafIcon";
 
 interface FormValues {
   postcode: string;
@@ -21,7 +21,7 @@ const Dashboard = () => {
   const { user } = UserAuth();
   const [loading, setLoading] = useState(true);
   const [intensityData, setIntensityData] = useState<CarbonIntensityData | null>(null);
-  const [userCarbonIntensityData, setUserCarbonIntensityData] = useState<CarbonIntensityData[] | null>(null);
+  const [userCarbonIntensityData, setUserCarbonIntensityData] = useState<CarbonIntensityData | null>(null);
 
   useEffect(() => {
     const fetchCarbonIntensityData = async () => {
@@ -37,10 +37,16 @@ const Dashboard = () => {
     return <Loading />;
   }
 
+  const findFirstModerateTimeSlot = (data: CarbonIntensityData[]): CarbonIntensityData | null => {
+    return data.find(slot => slot.intensity.index === 'moderate') || null;
+  };
+
   const onSubmit = async (values: FormValues, { setSubmitting }: FormikHelpers<FormValues>) => {
+    setUserCarbonIntensityData(null);
     try {
       const response = await getUserCarbonIntensityData(values.date, values.postcode);
-      setUserCarbonIntensityData(response.data.data)
+      const firstModerateSlot = findFirstModerateTimeSlot(response.data.data);
+      setUserCarbonIntensityData(firstModerateSlot);
     } catch (error) {
       console.log(error)
     } finally {
@@ -101,16 +107,29 @@ const Dashboard = () => {
               </div>
             </div>
             <div>
-              <p className="font-semibold">Next best available slot: </p>
-              {userCarbonIntensityData && userCarbonIntensityData.map(data => (
-                <div className="flex items-center space-x-2">
-                  <p className="text-gray-500">{capitalizeFirstLetter(data.intensity.index)}</p>
-                  <p className="text-gray-500">{data.from}</p>
-                  <p className="text-gray-500">{data.to}</p>
-                  <p className="text-gray-500">{data.intensity.forecast}</p>
-                </div>
-
-              ))}
+              {userCarbonIntensityData && (
+                <>
+                <p className="font-semibold">Next best available slot: </p>
+                  <div className="mx-auto bg-white rounded-2xl shadow-md p-4 flex flex-col items-center">
+                    <div className="flex items-center mb-1">
+                      <LeafIcon />
+                      <span className="text-sm font-semibold text-gray-700 ml-2">Carbon Intensity</span>
+                    </div>
+                    <p className="text-sm mb-2 text-orange-600 text-bold">Moderate </p>
+                    <div className="flex items-center justify-center">
+                      <div className={`text-4xl text-orange-600 font-bold mb-1`}>
+                        {userCarbonIntensityData.intensity.forecast}
+                        <span className='text-sm ml-2'>gCO<sub>2</sub>/kWh</span>
+                      </div>
+                    </div>
+                    <div className="text-sm text-gray-600 text-center mt-2 mx-4">Charging your EV during these times would result in a lower carbon footprint.</div>
+                    <div className="flex justify-between px-4 mt-2 text-gray-400 font-semibold text-sm space-x-4">
+                      <p>From: {extractTimeFromISOString(userCarbonIntensityData.from)}</p>
+                      <p>To: {extractTimeFromISOString(userCarbonIntensityData.to)}</p>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
             {isSubmitting && <div> <Loading message="Fetching Data.." className="h-auto" /></div>}
           </>
