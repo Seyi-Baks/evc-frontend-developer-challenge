@@ -1,4 +1,4 @@
-import { getUserCarbonIntensityData } from '../../api';
+import { getUserCarbonIntensityData } from '../../services';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 export const fetchUserCarbonIntensityData = createAsyncThunk(

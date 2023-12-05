@@ -2,7 +2,7 @@ import { CarbonIntensityResponse } from "../../types/carbonIntensityTypes";
 import { createSlice } from "@reduxjs/toolkit";
 import {
   fetchCarbonIntensityData,
-} from "./carbon-intensityThunks";
+} from "./nationalCarbonIntensityThunks";
 
 interface CarbonIntensityState {
   nationalData: CarbonIntensityResponse | null;
@@ -18,8 +18,8 @@ const initialState: CarbonIntensityState = {
 
 
 
-const carbonIntensitySlice = createSlice({
-  name: "carbonIntensity",
+const nationalCarbonIntensitySlice = createSlice({
+  name: "nationalCarbonIntensity",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -39,4 +39,4 @@ const carbonIntensitySlice = createSlice({
   },
 });
 
-export default carbonIntensitySlice.reducer;
+export default nationalCarbonIntensitySlice.reducer;

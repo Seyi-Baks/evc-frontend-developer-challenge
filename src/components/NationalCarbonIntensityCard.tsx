@@ -6,8 +6,7 @@ type Props = {
   intensityData: CarbonIntensityData;
 };
 
-const CarbonIntensityCard = ({ intensityData }: Props) => {
-  console.log("INTENSITY DATA ", intensityData)
+const NationalCarbonIntensityCard = ({ intensityData }: Props) => {
   const index = intensityData.intensity.index;
   let arrowColor = '';
   let arrowDirection = '';
@@ -48,4 +47,4 @@ const CarbonIntensityCard = ({ intensityData }: Props) => {
   );
 };
 
-export default CarbonIntensityCard;
+export default NationalCarbonIntensityCard;

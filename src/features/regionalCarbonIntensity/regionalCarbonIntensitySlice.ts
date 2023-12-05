@@ -2,8 +2,7 @@ import {
   UserCarbonIntensityResponse,
 } from "../../types/carbonIntensityTypes";
 import { createSlice } from "@reduxjs/toolkit";
-import { RootState } from "../../redux/store";
-import { fetchUserCarbonIntensityData } from "./user-carbon-intensityThunks";
+import { fetchUserCarbonIntensityData } from "./regionalCarbonIntensityThunks";
 
 interface UserCarbonIntensityState {
   userData: UserCarbonIntensityResponse | null;
@@ -17,27 +16,14 @@ const initialState: UserCarbonIntensityState = {
   error: null,
 };
 
-export const selectFirstModerateIntensitySlot = (
-  state: RootState,
-  date: Date
-) => {
-  return state.userCarbonIntensity.userData?.data.data?.find(slot => {
-    const toDate = new Date(slot.to);
-    return slot.intensity.index === "moderate" && toDate > date;
-  });
-};
-
-
-
-
-const userCarbonIntensitySlice = createSlice({
-  name: "carbonIntensity",
+const regionalCarbonIntensitySlice = createSlice({
+  name: "regionalCarbonIntensity",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchUserCarbonIntensityData.pending, (state) => {
-        state.isLoading = false;
+        state.isLoading = true;
         state.error = null;
       })
       .addCase(fetchUserCarbonIntensityData.fulfilled, (state, action) => {
@@ -51,4 +37,4 @@ const userCarbonIntensitySlice = createSlice({
   },
 });
 
-export default userCarbonIntensitySlice.reducer;
+export default regionalCarbonIntensitySlice.reducer;

@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { getCarbonIntensityData } from '../../api';
+import { getCarbonIntensityData } from '../../services';
 
 export const fetchCarbonIntensityData = createAsyncThunk(
   'carbonIntensity/fetchData',
