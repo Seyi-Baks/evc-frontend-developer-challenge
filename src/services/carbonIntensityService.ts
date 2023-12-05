@@ -7,18 +7,18 @@ export const getCarbonIntensityData = async (): Promise<CarbonIntensityResponse>
     try {
         const response = await axios.get<CarbonIntensityResponse>(`${API_BASE_URL}/intensity`);
         return response.data;
-    } catch (error) {
-        console.error('Error fetching user data:', error);
-        throw error;
+    } catch (e) {
+        const error = e as Error;
+        throw new Error(error.message || 'Error fetching carbon intensity data');
     }
 }
 
-export const getUserCarbonIntensityData = async (date: string, postCode: string): Promise<RegionalCarbonIntensityResponse> => {
+export const getRegionalCarbonIntensityData = async (date: string, postCode: string): Promise<RegionalCarbonIntensityResponse> => {
     try {
         const response = await axios.get<RegionalCarbonIntensityResponse>(`${API_BASE_URL}/regional/intensity/${date}Z/fw24h/postcode/${postCode}`);
         return response.data;
-    } catch (error) {
-        console.error('Error fetching user data:', error);
-        throw error;
+    } catch (e) {
+        const error = e as Error;
+        throw new Error(error.message || 'Error fetching regional carbon intensity data');
     }
 }

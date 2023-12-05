@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import LeafIcon from '../assets/icons/svg/LeafIcon';
 import { CarbonIntensityData } from '../types/carbonIntensityTypes';
 import { extractTimeFromISOString } from '../utils/date';
@@ -11,7 +11,7 @@ type Props = {
 
 const RegionalCarbonIntensityCard = ({ intensityData, selectedDate }: Props) => {
     const [isLoading, setIsLoading] = useState(true);
-    const [userCarbonIntensityData, setUserCarbonIntensityData] = useState<CarbonIntensityData>();
+    const [regionalCarbonIntensityData, setregionalCarbonIntensityData] = useState<CarbonIntensityData>();
 
     useEffect(() => {
         const foundData = intensityData.find(slot => {
@@ -19,7 +19,10 @@ const RegionalCarbonIntensityCard = ({ intensityData, selectedDate }: Props) => 
             return slot.intensity.index === "moderate" && toDate > selectedDate;
         });
 
-        setUserCarbonIntensityData(foundData);
+        setregionalCarbonIntensityData(prevData => {
+            if (prevData === foundData) return prevData;
+            return foundData;
+        });
 
         setIsLoading(false);
     }, [intensityData, selectedDate]);
@@ -39,14 +42,14 @@ const RegionalCarbonIntensityCard = ({ intensityData, selectedDate }: Props) => 
                 <p className="text-sm mb-2 text-orange-600 text-bold">Moderate </p>
                 <div className="flex items-center justify-center">
                     <div className={`text-4xl text-orange-600 font-bold mb-1`}>
-                        {userCarbonIntensityData?.intensity.forecast}
+                        {regionalCarbonIntensityData?.intensity.forecast}
                         <span className='text-sm ml-2'>gCO<sub>2</sub>/kWh</span>
                     </div>
                 </div>
                 <div className="text-sm text-gray-600 text-center mt-2 mx-4">Charging your EV during these times would result in a lower carbon footprint.</div>
                 <div className="flex justify-between px-4 mt-2 text-gray-400 font-semibold text-sm space-x-4">
-                    <p>From: {extractTimeFromISOString(userCarbonIntensityData?.from!)}</p>
-                    <p>To: {extractTimeFromISOString(userCarbonIntensityData?.to!)}</p>
+                    <p>From: {extractTimeFromISOString(regionalCarbonIntensityData?.from!)}</p>
+                    <p>To: {extractTimeFromISOString(regionalCarbonIntensityData?.to!)}</p>
                 </div>
             </div>
         </>

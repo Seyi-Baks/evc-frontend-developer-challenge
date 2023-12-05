@@ -58,6 +58,23 @@ const Dashboard = () => {
 
   const formattedDate = new Date().toISOString();
 
+  const renderRegionalCarbonIntensity = () => {
+    if (isRegionalCarbonIntensityDataLoading) {
+      return <Loading message="Fetching Data.." className="h-auto" />;
+    }
+  
+    if (regionalCarbonIntensityData?.data?.data) {
+      return (
+        <RegionalCarbonIntensityCard
+          selectedDate={selectedDate}
+          intensityData={regionalCarbonIntensityData.data.data}
+        />
+      );
+    }
+  
+    return null;
+  };
+
   return (
     <div className="flex flex-col mx-24 mt-12">
       <div className="flex justify-between items-start">
@@ -91,18 +108,7 @@ const Dashboard = () => {
                 </button>
               </div>
             </div>
-            <div>
-              {
-                isRegionalCarbonIntensityDataLoading ? (
-                  <Loading message="Fetching Data.." className="h-auto" />
-                ) : regionalCarbonIntensityData ? (
-                  <RegionalCarbonIntensityCard
-                    selectedDate={selectedDate}
-                    intensityData={regionalCarbonIntensityData.data.data}
-                  />
-                ) : null
-              }
-            </div>
+            {renderRegionalCarbonIntensity()}
           </>
         )}
       </Form>
