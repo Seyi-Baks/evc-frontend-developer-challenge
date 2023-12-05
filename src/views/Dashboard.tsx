@@ -19,10 +19,10 @@ interface FormValues {
 
 const Dashboard = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const user = useSelector((state: RootState) => state.user.user);
+  const user = useSelector((state: RootState) => state.auth.user);
   const dispatch: AppDispatch = useDispatch();
   const nationalCarbonIntensityData = useSelector((state: RootState) => state.nationalCarbonIntensity);
-  const regionalCarbonIntensityData = useSelector((state: RootState) => state.regionalCarbonIntensity.userData);
+  const regionalCarbonIntensityData = useSelector((state: RootState) => state.regionalCarbonIntensity.data);
   const isNationalCarbonIntensityDataLoading = useSelector((state: RootState) => state.nationalCarbonIntensity.isLoading);
   const isRegionalCarbonIntensityDataLoading = useSelector((state: RootState) => state.regionalCarbonIntensity.isLoading);
 
@@ -62,9 +62,9 @@ const Dashboard = () => {
     <div className="flex flex-col mx-24 mt-12">
       <div className="flex justify-between items-start">
         <h1 className="text-3xl font-bold">{getGreetingBasedOnTime()}, {user?.displayName}!</h1>
-        {nationalCarbonIntensityData.nationalData && (
+        {nationalCarbonIntensityData.data && (
           <div className="ml-auto">
-            <NationalCarbonIntensityCard intensityData={nationalCarbonIntensityData.nationalData?.data[0]} />
+            <NationalCarbonIntensityCard intensityData={nationalCarbonIntensityData.data?.data[0]} />
           </div>
         )}
 

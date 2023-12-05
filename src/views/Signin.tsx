@@ -6,7 +6,8 @@ import { AppDispatch, RootState } from '../redux/store';
 
 const SigninPage = () => {
     const dispatch: AppDispatch = useDispatch();
-    const user = useSelector((state: RootState) => state.user.user);
+    const user = useSelector((state: RootState) => state.auth.user);
+    const authError = useSelector((state: RootState) => state.auth.error);
     const navigate = useNavigate();
 
     const handleGoogleSignIn = () => {
@@ -23,6 +24,11 @@ const SigninPage = () => {
     return (
         <>
             <section className="flex justify-center">
+                {authError && (
+                    <div className="text-red-500 text-center">
+                        Error signing in: {authError.message}
+                    </div>
+                )}
                 <div className="md:w-[30%]">
                     <div className={'md:p-10 p-4 mx-auto mt-20'}>
                         <h1 className='text-2xl mb-6 text-center'>Log in to your account</h1>

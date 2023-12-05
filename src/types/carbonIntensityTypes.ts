@@ -1,8 +1,8 @@
 export interface CarbonIntensityResponse {
   data: CarbonIntensityData[];
 }
-export interface UserCarbonIntensityResponse {
-  data: UserCarbonIntensityData;
+export interface RegionalCarbonIntensityResponse {
+  data: RegionalCarbonIntensityData;
 }
 
 export interface IntensityDetails {
@@ -30,7 +30,7 @@ export interface CarbonIntensityData {
   generationmix?: GenerationMix[];
 }
 
-export interface UserCarbonIntensityData {
+export interface RegionalCarbonIntensityData {
     regionid: number,
     dnoregion: string,
     shortname: string,

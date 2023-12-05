@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { googleSignIn, logOut } from './authThunks';
+import { ErrorState } from '../../types/errorTypes';
 
 interface User {
   uid: string;
@@ -11,7 +12,7 @@ interface User {
 interface AuthState {
   user: User | null;
   isLoading: boolean;
-  error: string | null;
+  error: ErrorState | null;
 }
 
 const initialState: AuthState = {
@@ -40,11 +41,14 @@ export const authSlice = createSlice({
       })
       .addCase(googleSignIn.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload instanceof Error ? action.payload.message : 'An error occurred';
+        state.error = {
+          message: action.error.message,
+          code: action.error.code
+        };
       })
       .addCase(logOut.fulfilled, (state) => {
         state.user = null; 
-      });
+      })
   },
 });
 

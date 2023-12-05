@@ -5,13 +5,13 @@ import {
 } from "./nationalCarbonIntensityThunks";
 
 interface CarbonIntensityState {
-  nationalData: CarbonIntensityResponse | null;
+  data: CarbonIntensityResponse | null;
   isLoading: boolean;
   error: string | null;
 }
 
 const initialState: CarbonIntensityState = {
-  nationalData: null,
+  data: null,
   isLoading: false,
   error: null,
 };
@@ -30,7 +30,7 @@ const nationalCarbonIntensitySlice = createSlice({
       })
       .addCase(fetchCarbonIntensityData.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.nationalData = action.payload;
+        state.data = action.payload;
       })
       .addCase(fetchCarbonIntensityData.rejected, (state, action) => {
         state.isLoading = false;

@@ -1,17 +1,17 @@
 import {
-  UserCarbonIntensityResponse,
+  RegionalCarbonIntensityResponse,
 } from "../../types/carbonIntensityTypes";
 import { createSlice } from "@reduxjs/toolkit";
 import { fetchUserCarbonIntensityData } from "./regionalCarbonIntensityThunks";
 
 interface UserCarbonIntensityState {
-  userData: UserCarbonIntensityResponse | null;
+  data: RegionalCarbonIntensityResponse | null;
   isLoading: boolean;
   error: string | null;
 }
 
 const initialState: UserCarbonIntensityState = {
-  userData: null,
+  data: null,
   isLoading: false,
   error: null,
 };
@@ -28,7 +28,7 @@ const regionalCarbonIntensitySlice = createSlice({
       })
       .addCase(fetchUserCarbonIntensityData.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.userData = action.payload;
+        state.data = action.payload;
       })
       .addCase(fetchUserCarbonIntensityData.rejected, (state, action) => {
         state.isLoading = false;

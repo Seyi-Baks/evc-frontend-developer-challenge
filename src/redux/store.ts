@@ -5,7 +5,7 @@ import regionalCarbonIntensitySlice from '../features/regionalCarbonIntensity/re
 
 export const store = configureStore({
   reducer: {
-    user: authSlice,
+    auth: authSlice,
     nationalCarbonIntensity: nationalCarbonIntensitySlice,
     regionalCarbonIntensity: regionalCarbonIntensitySlice
   }

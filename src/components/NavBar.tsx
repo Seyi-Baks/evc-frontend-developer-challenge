@@ -5,7 +5,7 @@ import { logOut } from "../features/auth/authThunks";
 
 const Navbar = () => {
     const dispatch: AppDispatch = useDispatch();
-    const user = useSelector((state: RootState) => state.user.user);
+    const user = useSelector((state: RootState) => state.auth.user);
 
     const handleSignOut = async () => {
       try {
